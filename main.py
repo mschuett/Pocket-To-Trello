@@ -49,7 +49,7 @@ now_timestamp = int(datetime.now().timestamp())
 since_timestamp = conf_data['pocket_last_checked'] if 'pocket_last_checked' in conf_data else now_timestamp
 pocket_tag = conf_data['pocket_tag'] if 'pocket_tag' in conf_data else None
 
-new_pocket_items, _ = pocket_client.get(since=since_timestamp, tag=pocket_tag)
+new_pocket_items, _ = pocket_client.get(since=since_timestamp, detailType='complete', tag=pocket_tag)
 logger.info('Fetched new Pocket items')
 
 if len(new_pocket_items['list']) == 0:
@@ -76,10 +76,13 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
                                     desc=pocket_item_data['excerpt'])
         logger.info(f'Created card \'{page_title}\')')
         pocket_item_url = f'https://getpocket.com/a/read/{pocket_item_id}'
-        card.attach(url=pocket_item_url)
-        logger.info(f'Attached link {pocket_item_url} to item')
         card.attach(url=page_url)
         logger.info(f'Attached link {page_url} to item')
+        if pocket_item_data['has_image'] == '1':
+            pocket_item_image_url = pocket_item_data['image']['src']
+            card.attach(url=pocket_item_image_url)
+            logger.info(f'Attached img {pocket_item_image_url} to item')
+
 
 conf_data['pocket_last_checked'] = now_timestamp
 with open(CONFIG_FILE_NAME, 'w') as conf_file:
