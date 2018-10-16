@@ -3,6 +3,7 @@ import json
 import requests
 import os
 import logging
+import itertools
 from logging.handlers import RotatingFileHandler
 from pocket import Pocket
 from datetime import datetime
@@ -42,8 +43,19 @@ trello_client = TrelloClient(
     api_key=conf_data[AUTH_DATA_KEY]['trello_api_key'],
     token=conf_data[AUTH_DATA_KEY]['trello_token']
 )
-trello_list = trello_client.get_list(conf_data['trello_list_id'])
 logger.info('Logged in to Trello')
+trello_list = trello_client.get_list(conf_data['trello_list_id'])
+trello_board = trello_list.board
+trello_labels = {}
+for label in trello_board.get_labels():
+    label.fetch()
+    trello_labels[label.name] = label
+logging.debug('Labels: %s', trello_labels)
+
+trello_label_color_generator = itertools.cycle([
+    "green", "yellow", "orange", "red", "purple",
+    "blue", "sky", "lime", "pink", "black"])
+
 
 now_timestamp = int(datetime.now().timestamp())
 since_timestamp = conf_data['pocket_last_checked'] if 'pocket_last_checked' in conf_data else now_timestamp
@@ -82,6 +94,16 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
             pocket_item_image_url = pocket_item_data['image']['src']
             card.attach(url=pocket_item_image_url)
             logger.info(f'Attached img {pocket_item_image_url} to item')
+        for tag in pocket_item_data["tags"].keys():
+            # ignore marker tag
+            if pocket_tag and tag == pocket_tag:
+                continue
+            # create new label
+            if tag not in trello_labels:
+                label_color = next(trello_label_color_generator)
+                label = trello_board.add_label(tag, label_color)
+                trello_labels[tag] = label
+            card.add_label(trello_labels[tag])
 
 
 conf_data['pocket_last_checked'] = now_timestamp
