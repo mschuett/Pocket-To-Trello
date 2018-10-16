@@ -58,10 +58,10 @@ trello_label_color_generator = itertools.cycle([
 
 
 now_timestamp = int(datetime.now().timestamp())
-since_timestamp = conf_data['pocket_last_checked'] if 'pocket_last_checked' in conf_data else now_timestamp
 pocket_tag = conf_data['pocket_tag'] if 'pocket_tag' in conf_data else None
+pocket_state = conf_data['pocket_state'] if 'pocket_state' in conf_data else 'all'
 
-new_pocket_items, _ = pocket_client.get(since=since_timestamp, detailType='complete', tag=pocket_tag)
+new_pocket_items, _ = pocket_client.get(state=pocket_state, detailType='complete', tag=pocket_tag)
 logger.info('Fetched new Pocket items')
 
 if len(new_pocket_items['list']) == 0:
