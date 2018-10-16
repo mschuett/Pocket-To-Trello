@@ -1,6 +1,19 @@
 # Pocket-To-Trello
 A utility to create cards in a reading board in Trello out of new items saved to Pocket
 
+## About this Fork
+
+I forked the original version from [OrBin/Pocket-To-Trello](https://github.com/OrBin/Pocket-To-Trello)
+to adapt it for my own workflow for reblogging interesting items:
+- I use a specific tag `reblog` in Pocket,
+- I want Pocket-To-Trello to copy those items to Trello,
+- After an item is copied it is archived in Pocket (so be careful when testing this version, as it will modify your Pocket list).
+
+Other small changes:
+- Copy Pocket's tags as Trello labels,
+- Copy an item's first image (as used in Pocket) to the Trello card,
+- Do not add the Pocket URL as attachment.
+
 ## Usage
 
 ### Installing requirements
