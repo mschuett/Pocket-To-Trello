@@ -105,6 +105,9 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
                 trello_labels[tag] = label
             card.add_label(trello_labels[tag])
 
+        pocket_client.archive(pocket_item_id).commit()
+        logger.info(f'Archived item {page_url}')
+
 
 conf_data['pocket_last_checked'] = now_timestamp
 with open(CONFIG_FILE_NAME, 'w') as conf_file:
