@@ -71,7 +71,7 @@ if len(new_pocket_items['list']) == 0:
 for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
     if pocket_item_data['status'] == '0':
         page_url = pocket_item_data['given_url']
-        logger.info(f'Found item {page_url}')
+        logger.info('Found item %s', page_url)
 
         # Getting page title
         if page_url.endswith('.pdf'):
@@ -86,14 +86,14 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
 
         card = trello_list.add_card(name=page_title,
                                     desc=pocket_item_data['excerpt'])
-        logger.info(f'Created card \'{page_title}\'')
-        pocket_item_url = f'https://getpocket.com/a/read/{pocket_item_id}'
+        logger.info('Created card \'%s\'', page_title)
+        pocket_item_url = 'https://getpocket.com/a/read/%s' % pocket_item_id
         card.attach(url=page_url)
-        logger.info(f'Attached link {page_url} to item')
+        logger.info('Attached link %s to item', page_url)
         if pocket_item_data['has_image'] == '1':
             pocket_item_image_url = pocket_item_data['image']['src']
             card.attach(url=pocket_item_image_url)
-            logger.info(f'Attached img {pocket_item_image_url} to item')
+            logger.info('Attached img %s to item', pocket_item_image_url)
         for tag in pocket_item_data["tags"].keys():
             # ignore marker tag
             if pocket_tag and tag == pocket_tag:
@@ -106,7 +106,7 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
             card.add_label(trello_labels[tag])
 
         pocket_client.archive(pocket_item_id).commit()
-        logger.info(f'Archived item {page_url}')
+        logger.info('Archived item %s', page_url)
 
 
 conf_data['pocket_last_checked'] = now_timestamp
