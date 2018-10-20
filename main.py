@@ -86,7 +86,7 @@ for pocket_item_id, pocket_item_data in new_pocket_items['list'].items():
 
         card = trello_list.add_card(name=page_title,
                                     desc=pocket_item_data['excerpt'])
-        logger.info(f'Created card \'{page_title}\')')
+        logger.info(f'Created card \'{page_title}\'')
         pocket_item_url = f'https://getpocket.com/a/read/{pocket_item_id}'
         card.attach(url=page_url)
         logger.info(f'Attached link {page_url} to item')
